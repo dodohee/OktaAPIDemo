@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "Historical Stock Prices";
+}
+
+<div class="jumbotron">
+    <h2>Historical Stock Prices  <button type="button" id="lnkAutoPopulate" class="btn btn-primary btn-xs pull-right">Auto-Populate</button></h2>
+    <p>
+        <table class="table table-condensed">
+            <tr>
+                <td>Days</td>
+                @for (int i = 1; i <= 12; i++)
+                {
+                    <td style="text-align: center">@i</td>
+                }
+            </tr>
+            <tr>
+                <td>Prices</td>
+                @for (int i = 1; i <= 12; i++)
+                {
+                    <td style="text-align: center"><input id="@($"Stock{i}")" name="@($"Stock{i}")" type="text" size="1"></td>
+                }
+            </tr>
+            <tr>
+                <td colspan="11"></td>
+            </tr>
+        </table>
+    </p>
+    <p>
+        <input type="submit" value="Compute" id="btnCompute" class="btn btn-default" />
+    </p>
+    <p id="pProfit" style="display: none;">Your maximum profit is <span id="sProfit"></span></p>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#btnCompute').on('click', clickedCompute);
+            $('#lnkAutoPopulate').on('click', clickedAutoPopulate);
+        });
+
+        function changedStock() {
+            var prices = $("input[id^='Stock']");
+            prices.each(function () {
+                $(this).css("background-color", "");
+            });
+        }
+
+        function clickedCompute() {
+            changedStock();
+            var prices = $("input[id^='Stock']");
+
+            var maxProfit = 0;
+            var idStart = 0;
+            var idMinimum = 0;
+            var idMax = 0;
+
+            for (var i = 0; i < prices.length; i++) {
+                var iCurrent = StrToInt(prices, i);
+                var iStart = StrToInt(prices, idStart);
+
+                //if the current value < than the start value store current id
+                if (iCurrent < iStart) {
+                    idStart = i;
+                }
+
+                //if higher max profit, update variables (only stores first max profit)
+                if (iCurrent - iStart > maxProfit) {
+                    maxProfit = iCurrent - iStart;
+                    idMinimum = idStart;
+                    idMax = i;
+                }
+            }
+
+            prices.eq(idMinimum).css("background-color", "#9ACD32");
+            prices.eq(idMax).css("background-color", "#ff8080");
+
+            $('#pProfit').show();
+            $('#sProfit').html(maxProfit);
+        }
+
+        function StrToInt(prices, index) {
+            return parseInt(prices.eq(index).val());
+        }
+
+        function clickedAutoPopulate() {
+            changedStock();
+            $("input[id^='Stock']").each(function() {
+                $(this).val(Math.floor((Math.random() * 20) + 1));
+            });
+        }
+    </script>
+}

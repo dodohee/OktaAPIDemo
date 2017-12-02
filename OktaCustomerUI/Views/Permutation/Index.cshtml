@@ -1,0 +1,25 @@
+﻿@model OktaAPIShared.Models.PermutationModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@using (Html.BeginForm("Permutate", "Permutation", FormMethod.Post))
+{
+    <div class="jumbotron">
+        <h2>Enter any string</h2>
+        <p>@Html.TextBoxFor(m => m.Permutate)</p>
+        <p>
+            <input type="submit" value="Generate" class="btn btn-default"/>
+        </p>
+        @if (Model.Permutations.Any())
+        {
+            <h3>Permutations Count = @Model.Permutations.Count</h3>
+            <ul>
+                @foreach (var s in Model.Permutations)
+                {
+                    <li>@s</li>
+                }
+            </ul>
+        }
+    </div>
+}
