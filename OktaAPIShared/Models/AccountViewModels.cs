@@ -5,19 +5,6 @@ using System.Runtime.Serialization;
 
 namespace OktaAPIShared.Models
 {
-    public class PermutationModel
-    {
-        [Required]
-        [Display(Name = "Permutate")]
-        public string Permutate { get; set; }
-
-        public List<string> Permutations { get; set; }
-
-        public PermutationModel()
-        {
-            Permutations = new List<string>();
-        }
-    }
 
     public class VerifyCodeViewModel
     {

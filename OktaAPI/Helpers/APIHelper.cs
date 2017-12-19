@@ -32,35 +32,40 @@ namespace OktaAPI.Helpers
             _oktaOAuthHeaderAuth = Base64Encode($"{_oktaOAuthClientId}:{oktaOAuthSecret}");
         }
 
-        public static IEnumerable<Customer> GetAllCustomers()
+        public static IEnumerable<BaseCustomer> GetAllCustomers()
         {
             var sJsonResponse = JsonHelper.Get($"https://{_apiUrlBase}/api/v1/users?limit=100", _oktaToken);
 
-            var result = JsonConvert.DeserializeObject<IEnumerable<Customer>>(sJsonResponse);
+            var result = JsonConvert.DeserializeObject<IEnumerable<BaseCustomer>>(sJsonResponse);
 
             return result;
         }
 
-        public static Customer GetCustomerById(string customerId)
+        public static Customer GetCustomerById(string Id)
         {
-            return GetObjectFromAPI<Customer>(HttpMethod.Get, $"https://{_apiUrlBase}/api/v1/users/{customerId}");
+            var sJsonResponse = JsonHelper.Get($"https://{_apiUrlBase}/api/v1/users/{Id}", _oktaToken);
+
+            var result = JsonConvert.DeserializeObject<Customer>(sJsonResponse);
+
+            return result;
         }
 
-        public static OktaSessionResponse AddNewCustomer(AddCustomer oNewCustomer)
+        public static OktaSessionResponse UpdateCustomer(Customer oCustomer)
         {
-            var sJsonResponse = JsonHelper.Post($"https://{_apiUrlBase}/api/v1/users?activate=true", JsonHelper.JsonContent(oNewCustomer), _oktaToken);
+            var uc = new CustomerUpdate(oCustomer);
+
+            var sJsonResponse = JsonHelper.Post($"https://{_apiUrlBase}/api/v1/users/{oCustomer.Id}", JsonHelper.JsonContent(uc), _oktaToken);
 
             return JsonConvert.DeserializeObject<OktaSessionResponse>(sJsonResponse);
         }
 
-        public static Customer UpdateCustomer(string id, Customer customer)
+        public static OktaSessionResponse AddNewCustomer(Customer oCustomer)
         {
-            return GetObjectFromAPI<Customer>(HttpMethod.Post, $"https://{_apiUrlBase}/api/v1/users/{id}", customer);
-        }
+            var oNewCustomer = new CustomerAdd(oCustomer);
 
-        public static Customer GetCurrentUser(string customerId, string oAuthToken)
-        {
-            return GetObjectFromAPI<Customer>(HttpMethod.Get, $"https://{_apiUrlBase}/api/customer/{customerId}", oAuthToken);
+            var sJsonResponse = JsonHelper.Post($"https://{_apiUrlBase}/api/v1/users?activate=true", JsonHelper.JsonContent(oNewCustomer), _oktaToken);
+
+            return JsonConvert.DeserializeObject<OktaSessionResponse>(sJsonResponse);
         }
 
         public static TokenIntrospectionResponse IntrospectToken(string token)
@@ -77,7 +82,6 @@ namespace OktaAPI.Helpers
                 _oktaOAuthRedirectUri,
                 oktaSessionId);
         }
-
 
         public static OktaSessionResponse GetSession(LoginViewModel login)
         {
@@ -107,7 +111,7 @@ namespace OktaAPI.Helpers
 
         private static T GetObjectFromAPI<T>(HttpMethod method, string uri, object model, string authHeader)
         {
-            T result = default(T);
+            var result = default(T);
             var request = CreateBaseRequest(method, uri, model, authHeader);
             var response = _client.SendAsync(request).Result;
 
@@ -148,9 +152,11 @@ namespace OktaAPI.Helpers
 
         private static HttpRequestMessage CreateBaseRequest(HttpMethod method, string uri, object model = null, string authHeader = null)
         {
-            HttpRequestMessage request = new HttpRequestMessage();
-            request.RequestUri = new Uri(uri);
-            request.Method = method;
+            var request = new HttpRequestMessage
+            {
+                RequestUri = new Uri(uri),
+                Method = method
+            };
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             //request.Headers.Authorization = authHeader != null ? new AuthenticationHeaderValue("Basic", authHeader) : new AuthenticationHeaderValue("SSWS", _oktaToken);//_oktaApiKey
 

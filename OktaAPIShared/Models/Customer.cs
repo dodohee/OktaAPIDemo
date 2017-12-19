@@ -4,9 +4,8 @@ using System.Runtime.Serialization;
 
 namespace OktaAPIShared.Models
 {
-
     [DataContract]
-    public class Customer
+    public class BaseCustomer
     {
         [DataMember(Name = "id")]
         public String Id { get; set; }
@@ -17,14 +16,48 @@ namespace OktaAPIShared.Models
         [DataMember(Name = "profile")]
         public Profile Profile { get; set; }
 
-        public Customer()
+        public BaseCustomer()
         {
             Profile = new Profile();
         }
     }
 
     [DataContract]
-    public class AddCustomer
+    public class Customer : BaseCustomer
+    {
+        public Credentials Credentials { get; set; }
+
+        public Customer()
+        {
+            Credentials = new Credentials();
+        }
+    }
+
+    ///// <summary>
+    ///// Minimum object for Update
+    ///// </summary>
+    [DataContract]
+    public class CustomerUpdate
+    {
+        [DataMember(Name = "profile")]
+        public Profile Profile { get; set; }
+
+        public CustomerUpdate()
+        {
+            Profile = new Profile();
+        }
+
+        public CustomerUpdate(BaseCustomer customer)
+        {
+            Profile = customer.Profile;
+        }
+    }
+
+    /// <summary>
+    /// Minimum object for Add
+    /// </summary>
+    [DataContract]
+    public class CustomerAdd
     {
         [DataMember(Name = "profile")]
         public Profile Profile { get; set; }
@@ -32,12 +65,13 @@ namespace OktaAPIShared.Models
         [DataMember(Name = "credentials")]
         public Credentials Credentials { get; set; }
 
-        public AddCustomer()
+        public CustomerAdd(Customer customer)
         {
-            Credentials = new Credentials();
+            Profile = customer.Profile;
+            Credentials = customer.Credentials;
         }
     }
-
+    
     [DataContract]
     public class Credentials
     {

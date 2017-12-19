@@ -21,22 +21,56 @@ namespace OktaCustomerUI.Controllers
 
         public ActionResult Register()
         {
-            var model = new AddCustomer();
+            ViewBag.IsNewUser = true;
+
+            var model = new Customer();
 
             return View("Register", model);
         }
 
-        public ActionResult AddUser(AddCustomer model)
+        public ActionResult EditUser(string Id)
+        {
+            ViewBag.IsNewUser = false;
+
+            var customer = APIHelper.GetCustomerById(Id);
+
+            return View("Register", customer);
+        }
+
+        public ActionResult UpdateUser(Customer model)
         {
             if (!ModelState.IsValid)
             {
                 return View("Register", model);
             }
+            
+            var response = APIHelper.UpdateCustomer(model);
 
-            model.Profile.Login = model.Profile.Email;//so the user doenst need to enter it also
+            if (response != null && response.status == "ACTIVE")
+            {
+                var name = "Unknown";
+                try
+                {
+                    name = $"{model.Profile.FirstName} {model.Profile.LastName}";
+                }
+                catch
+                {
+                    // ignored
+                }
 
-            //var sessionResponse = APIHelper.AddNewCustomer(model);
+                TempData["Message"] = name + " has been updated";
+            }
+            
+            return RedirectToAction("List");
+        }
 
+        public ActionResult AddUser(Customer model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Register", model);
+            }
+            
             var response = APIHelper.AddNewCustomer(model);
 
             if (response != null && response.status == "ACTIVE")
