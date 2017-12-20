@@ -50,22 +50,22 @@ namespace OktaAPI.Helpers
             return result;
         }
 
-        public static OktaSessionResponse UpdateCustomer(Customer oCustomer)
+        public static dynamic UpdateCustomer(Customer oCustomer)
         {
             var uc = new CustomerUpdate(oCustomer);
 
             var sJsonResponse = JsonHelper.Post($"https://{_apiUrlBase}/api/v1/users/{oCustomer.Id}", JsonHelper.JsonContent(uc), _oktaToken);
 
-            return JsonConvert.DeserializeObject<OktaSessionResponse>(sJsonResponse);
+            return JsonConvert.DeserializeObject(sJsonResponse);
         }
 
-        public static OktaSessionResponse AddNewCustomer(Customer oCustomer)
+        public static dynamic AddNewCustomer(Customer oCustomer)
         {
             var oNewCustomer = new CustomerAdd(oCustomer);
 
             var sJsonResponse = JsonHelper.Post($"https://{_apiUrlBase}/api/v1/users?activate=true", JsonHelper.JsonContent(oNewCustomer), _oktaToken);
 
-            return JsonConvert.DeserializeObject<OktaSessionResponse>(sJsonResponse);
+            return JsonConvert.DeserializeObject(sJsonResponse);
         }
 
         public static TokenIntrospectionResponse IntrospectToken(string token)

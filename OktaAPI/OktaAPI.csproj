@@ -137,10 +137,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Controllers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\OktaAPIShared\OktaAPIShared.csproj">
       <Project>{355ada26-fc3e-40f3-a74e-e8b7559b18bb}</Project>

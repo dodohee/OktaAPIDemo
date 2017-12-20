@@ -32,14 +32,15 @@ namespace OktaAPI.Helpers
             }
             catch (WebException ex)
             {
-                WebResponse errorResponse = ex.Response;
-                using (Stream responseStream = errorResponse.GetResponseStream())
+                using (var stream = ex.Response.GetResponseStream())
+                using (var reader = new StreamReader(stream))
                 {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-                    String errorText = reader.ReadToEnd();
-                    // log errorText
+                    return reader.ReadToEnd();
                 }
-                throw;
+            }
+            catch (Exception ex)
+            {
+                return "Unhandled Error";
             }
         }
 
@@ -76,9 +77,18 @@ namespace OktaAPI.Helpers
             }
             catch (WebException ex)
             {
-                // Log exception and throw as for GET example above
-                return "Error";
+                using (var stream = ex.Response.GetResponseStream())
+                using (var reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
             }
+            catch (Exception ex)
+            {
+                return "Unhandled Error";
+            }
+
+            return "";
         }
 
         public static string JsonContent(object model)

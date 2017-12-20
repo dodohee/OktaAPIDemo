@@ -14,6 +14,7 @@ namespace OktaCustomerUI.Controllers
             if (TempData["Message"] != null)
             {
                 ViewBag.Message = TempData["Message"];
+                ViewBag.IsError = TempData["IsError"];
             }
 
             return View("List", model);
@@ -46,21 +47,26 @@ namespace OktaCustomerUI.Controllers
             
             var response = APIHelper.UpdateCustomer(model);
 
-            if (response != null && response.status == "ACTIVE")
+            if (response != null && response.errorSummary == null)
             {
                 var name = "Unknown";
                 try
                 {
                     name = $"{model.Profile.FirstName} {model.Profile.LastName}";
+                    TempData["Message"] = name + " has been updated";
+                    TempData["IsError"] = false;
                 }
                 catch
                 {
-                    // ignored
-                }
 
-                TempData["Message"] = name + " has been updated";
+                }
             }
-            
+            else
+            {
+                TempData["Message"] = response.errorSummary;
+                TempData["IsError"] = true;
+            }
+
             return RedirectToAction("List");
         }
 
@@ -73,21 +79,26 @@ namespace OktaCustomerUI.Controllers
             
             var response = APIHelper.AddNewCustomer(model);
 
-            if (response != null && response.status == "ACTIVE")
+            if (response != null && response.errorSummary == null)
             {
                 var name = "Unknown";
                 try
                 {
                     name = $"{model.Profile.FirstName} {model.Profile.LastName}";
+                    TempData["Message"] = name + " has been registered";
+                    TempData["IsError"] = false;
                 }
                 catch
                 {
-                    // ignored
+
                 }
-
-                TempData["Message"] = name + " has been registered";
             }
-
+            else
+            {
+                TempData["Message"] = response.errorSummary;
+                TempData["IsError"] = true;
+            }
+            
             return RedirectToAction("List");
         }
     }

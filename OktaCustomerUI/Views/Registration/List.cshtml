@@ -8,7 +8,12 @@
     
     @if (ViewBag.Message != null)
     {
-        <p class="alert-success">@ViewBag.Message</p>
+        var displaytype = "alert alert-success";
+        if (ViewBag.IsError)
+        {
+            displaytype = "alert alert-danger";
+        }
+        <p class="@displaytype">@ViewBag.Message</p>
     }
 
     <h2>@ViewBag.Title</h2>

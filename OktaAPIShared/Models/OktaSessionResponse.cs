@@ -16,13 +16,21 @@ namespace OktaAPIShared.Models {
 
         [DataMember(Name = "_embedded")]
         public _embedded _embedded { get; set; }
+
+        [DataMember(Name = "errorCode")]
+        public _embedded errorCode { get; set; }
+
+        [DataMember(Name = "errorSummary")]
+        public _embedded errorSummary { get; set; }
     }
 
+    [DataContract]
     public class _embedded
     {
         public user user { get; set; }
     }
 
+    [DataContract]
     public class user
     {
         public string id { get; set; }
@@ -31,12 +39,11 @@ namespace OktaAPIShared.Models {
         public profile profile { get; set; }
     }
 
+    [DataContract]
     public class profile
     {
         public string login { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
     }
-
-
 }
