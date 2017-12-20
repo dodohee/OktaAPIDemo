@@ -29,7 +29,7 @@ namespace OktaCustomerUI.Controllers
                 return View(model);
             }
 
-            var sessionResponse = APIHelper.GetSession(model);
+            var sessionResponse = APIHelper.SendBasicLogin(model);
 
             if (sessionResponse != null && !string.IsNullOrEmpty(sessionResponse.SessionToken))
             {

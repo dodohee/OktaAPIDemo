@@ -13,21 +13,23 @@ namespace OktaAPI.Helpers
     public class APIHelper
     {
         private static string _apiUrlBase;
+        private static string _oktaToken;
         private static string _oktaOAuthHeaderAuth;
         private static string _oktaOAuthIssuerId;
         private static string _oktaOAuthClientId;
         private static string _oktaOAuthRedirectUri;
-        private static string _oktaToken;
+        
         private static HttpClient _client = new HttpClient();
 
         static APIHelper()
         {
             _apiUrlBase = WebConfigurationManager.AppSettings["okta:BaseUrl"];
+            _oktaToken = WebConfigurationManager.AppSettings["okta:APIToken"];
+
             _oktaOAuthIssuerId = WebConfigurationManager.AppSettings["okta:OAuthIssuerId"];
             _oktaOAuthClientId = WebConfigurationManager.AppSettings["okta:OAuthClientId"];
             _oktaOAuthRedirectUri = WebConfigurationManager.AppSettings["okta:OAuthRedirectUri"];
-            _oktaToken = WebConfigurationManager.AppSettings["okta:OAuthToken"];
-
+            
             var oktaOAuthSecret = WebConfigurationManager.AppSettings["okta:OauthClientSecret"];
             _oktaOAuthHeaderAuth = Base64Encode($"{_oktaOAuthClientId}:{oktaOAuthSecret}");
         }
@@ -83,7 +85,7 @@ namespace OktaAPI.Helpers
                 oktaSessionId);
         }
 
-        public static OktaSessionResponse GetSession(LoginViewModel login)
+        public static OktaSessionResponse SendBasicLogin(LoginViewModel login)
         {
             //create simple class to lowecase model for json - case sensitive
             var ologin = new OktaAPIShared.Models.Login
