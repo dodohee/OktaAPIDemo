@@ -37,6 +37,7 @@ namespace OktaCustomerUI.Controllers
                 try
                 {
                     name = $"{sessionResponse._embedded.user.profile.firstName} {sessionResponse._embedded.user.profile.lastName}";
+                    TempData["IsError"] = false;
                 }
                 catch
                 {
@@ -48,19 +49,24 @@ namespace OktaCustomerUI.Controllers
 
                 TempData["Message"] = "You have been logged in as " + name;
             }
+            else
+            {
+                try
+                {
+                    TempData["Message"] = sessionResponse.errorSummary;
+                    TempData["IsError"] = true;
+                }
+                catch
+                {
+                    // ignored
+                }
+
+            }
 
             //return View(model);
             return RedirectToAction("Index", "Home");
         }
-
-        //
-        // GET: /Account/Register
-        [AllowAnonymous]
-        public ActionResult Register()
-        {
-            return View();
-        }
-
+        
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -13,21 +13,8 @@ namespace OktaCustomerUI.Controllers
             if (TempData["Message"] != null)
             {
                 ViewBag.Message = TempData["Message"];
+                ViewBag.IsError = TempData["IsError"];
             }
-
-            return View();
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
 
             return View();
         }

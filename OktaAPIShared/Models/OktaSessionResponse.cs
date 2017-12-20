@@ -18,10 +18,10 @@ namespace OktaAPIShared.Models {
         public _embedded _embedded { get; set; }
 
         [DataMember(Name = "errorCode")]
-        public _embedded errorCode { get; set; }
+        public string errorCode { get; set; }
 
         [DataMember(Name = "errorSummary")]
-        public _embedded errorSummary { get; set; }
+        public string errorSummary { get; set; }
     }
 
     public class _embedded
