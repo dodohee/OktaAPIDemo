@@ -24,13 +24,11 @@ namespace OktaAPIShared.Models {
         public _embedded errorSummary { get; set; }
     }
 
-    [DataContract]
     public class _embedded
     {
         public user user { get; set; }
     }
 
-    [DataContract]
     public class user
     {
         public string id { get; set; }
@@ -39,7 +37,6 @@ namespace OktaAPIShared.Models {
         public profile profile { get; set; }
     }
 
-    [DataContract]
     public class profile
     {
         public string login { get; set; }
