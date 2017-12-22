@@ -145,5 +145,13 @@ namespace OktaCustomerUI.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        [AllowAnonymous]
+        public ActionResult OIDCLogoff()
+        {
+            Helpers.LoginHelper.OIDCLogout();
+
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

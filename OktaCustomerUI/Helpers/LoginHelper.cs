@@ -9,6 +9,8 @@ namespace OktaCustomerUI.Helpers
     {
         public static readonly string ACCESS_TOKEN = "ACCESS_TOKEN";//auth token for introspection and access at okta level
         public static readonly string ID_TOKEN = "ID_TOKEN";//id token for app to parse and look at claims
+
+        //For demonstration purpose only
         public static readonly string VERIFIED_REQUEST = "VERIFIED_REQUEST";//only do once per request
         public static readonly string TIR = "TIR";
 
@@ -94,6 +96,14 @@ namespace OktaCustomerUI.Helpers
         private static HttpCookie GetAccessCookie()
         {
             return new HttpCookie(ACCESS_TOKEN);
+        }
+
+        public static void OIDCLogout()
+        {
+            HttpContext.Current.Items[VERIFIED_REQUEST] = null;
+            HttpContext.Current.Items[TIR] = null;
+
+            ExpireCookies();
         }
     }
 }
