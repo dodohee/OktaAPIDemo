@@ -31,6 +31,7 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
+        @Html.Partial("_DisplayTokenInfo")
         <footer>
             <p>&copy; @DateTime.Now.Year - Okta Demo</p>
         </footer>

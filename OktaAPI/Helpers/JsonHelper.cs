@@ -45,27 +45,39 @@ namespace OktaAPI.Helpers
         }
 
         // POST a JSON string
-        public static string Post(string url, string jsonContent, string oktaToken = null)
+        public static string Post(string url, string jsonContent = null, string oktaToken = null, string oktaOAuthHeader = null)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";
-
-            UTF8Encoding encoding = new UTF8Encoding();
-            Byte[] byteArray = encoding.GetBytes(jsonContent);
-
-            request.ContentLength = byteArray.Length;
             request.ContentType = @"application/json";
+            request.Accept = @"application/json";
 
             if (!string.IsNullOrEmpty(oktaToken))
             {
                 request.Headers.Add("Authorization", "SSWS " + oktaToken);
             }
 
-            using (Stream dataStream = request.GetRequestStream())
+            if (!string.IsNullOrEmpty(oktaOAuthHeader))
             {
-                dataStream.Write(byteArray, 0, byteArray.Length);
+                request.Headers.Add("Authorization", "Basic " + oktaOAuthHeader);
             }
-            //long length = 0;
+
+            if (!string.IsNullOrEmpty(jsonContent))
+            {
+                UTF8Encoding encoding = new UTF8Encoding();
+                Byte[] byteArray = encoding.GetBytes(jsonContent);
+                request.ContentLength = byteArray.Length;
+
+                using (Stream dataStream = request.GetRequestStream())
+                {
+                    dataStream.Write(byteArray, 0, byteArray.Length);
+                }
+            }
+            else
+            {
+                request.ContentType = @"application/x-www-form-urlencoded";
+            }
+            
             try
             {
                 var response = request.GetResponse();

@@ -6,42 +6,40 @@ namespace OktaAPIShared.Models {
     public class TokenIntrospectionResponse {
 
         [DataMember(Name = "active")]
-        public Boolean Active { get; set; }
+        public bool Active { get; set; }
 
         [DataMember(Name = "scope")]
-        public String Scope { get; set; }
+        public string Scope { get; set; }
 
         [DataMember(Name = "username")]
-        public String UserName { get; set; }
+        public string UserName { get; set; }
 
         [DataMember(Name = "exp")]
-        public String Exp { get; set; }
+        public string Exp { get; set; }
 
         [DataMember(Name = "iat")]
-        public String IAT { get; set; }
+        public string IAT { get; set; }
 
         [DataMember(Name = "sub")]
-        public String Sub { get; set; }
+        public string Sub { get; set; }
 
         [DataMember(Name = "aud")]
-        public String Aud { get; set; }
+        public string Aud { get; set; }
 
         [DataMember(Name = "iss")]
-        public String ISS { get; set; }
+        public string ISS { get; set; }
 
         [DataMember(Name = "jti")]
-        public String JTI { get; set; }
+        public string JTI { get; set; }
 
         [DataMember(Name = "token_type")]
-        public String TokenType { get; set; }
+        public string TokenType { get; set; }
 
         [DataMember(Name = "client_id")]
-        public String ClientId { get; set; }
+        public string ClientId { get; set; }
 
         [DataMember(Name = "uid")]
-        public String UID { get; set; }
-
-
+        public string UID { get; set; }
     }
 }
  

@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -107,7 +108,6 @@
     <Compile Include="Models\AuthenticationResponse.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Embedded.cs" />
-    <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\OIDCTokenResponse.cs" />
     <Compile Include="Models\OktaSessionResponse.cs" />
     <Compile Include="Models\Profile.cs" />
