@@ -3,32 +3,59 @@ using System;
 using OktaAPIShared.Models;
 using OktaAPI.Helpers;
 
-
 namespace OktaCustomerUI.Helpers
 {
     public static class LoginHelper
     {
         public static readonly string ACCESS_TOKEN = "ACCESS_TOKEN";//auth token for introspection and access at okta level
         public static readonly string ID_TOKEN = "ID_TOKEN";//id token for app to parse and look at claims
-        
+        public static readonly string VERIFIED_REQUEST = "VERIFIED_REQUEST";//only do once per request
+        public static readonly string TIR = "TIR";
+
+        public static bool CheckedRequest()
+        {
+            bool bChecked = false;
+            if (HttpContext.Current.Items[VERIFIED_REQUEST] != null && (bool)HttpContext.Current.Items[VERIFIED_REQUEST]) {
+                bChecked = true;
+            }
+
+            HttpContext.Current.Items[VERIFIED_REQUEST] = true;//set for next time
+
+            return bChecked;
+        }
+
         public static void SetOIDCTokens(OIDCTokenResponse tokenresponse)
         {
-            var accesscookie = new HttpCookie(ACCESS_TOKEN);
+            HttpContext.Current.Items[VERIFIED_REQUEST] = false;//reset to recheck
+
+            var accesscookie = GetAccessCookie();
             accesscookie.Value = tokenresponse.AccessToken;
             accesscookie.Expires = DateTime.Now.AddDays(1);
             HttpContext.Current.Response.Cookies.Add(accesscookie);
 
-            var idcookie = new HttpCookie(ID_TOKEN);
-            idcookie.Value = tokenresponse.IDToken;
-            idcookie.Expires = DateTime.Now.AddDays(1);
-            HttpContext.Current.Response.Cookies.Add(idcookie);
+            //Not Used
+            //var idcookie = new HttpCookie(ID_TOKEN);
+            //idcookie.Value = tokenresponse.IDToken;
+            //idcookie.Expires = DateTime.Now.AddDays(1);
+            //HttpContext.Current.Response.Cookies.Add(idcookie);
+        }
+
+        public static bool IsUserAuthorized()
+        {
+            var oTIR = GetOIDCIntrospectionDetails();
+            return oTIR != null;
         }
 
         public static TokenIntrospectionResponse GetOIDCIntrospectionDetails()
         {
-            TokenIntrospectionResponse tir = null;
+            if (CheckedRequest())
+            {
+                return (TokenIntrospectionResponse)HttpContext.Current.Items[TIR];
+            }
 
-            var accesscookie = new HttpCookie(ACCESS_TOKEN);
+            TokenIntrospectionResponse oTIR = null;
+
+            var accesscookie = GetAccessCookie();
             accesscookie = HttpContext.Current.Request.Cookies[ACCESS_TOKEN];
 
             if (accesscookie != null)
@@ -37,16 +64,36 @@ namespace OktaCustomerUI.Helpers
 
                 if (!string.IsNullOrEmpty(accesstoken))
                 {
-                    tir = APIHelper.IntrospectToken(accesstoken);
+                    oTIR = APIHelper.IntrospectToken(accesstoken);
                 }
                 
-                if (!tir.Active)
+                if (!oTIR.Active)
                 {
-                    tir = null;
+                    oTIR = null;
+                    ExpireCookies();
                 }
             }
 
-            return tir;
+            HttpContext.Current.Items[TIR] = oTIR;
+
+            return oTIR;
+        }
+        
+        private static void ExpireCookies()
+        {
+            var accesscookie = GetAccessCookie();
+            accesscookie.Expires = DateTime.Now.AddDays(-1);
+            HttpContext.Current.Response.Cookies.Add(accesscookie);
+
+            //Not Used
+            //var idcookie = new HttpCookie(ID_TOKEN);
+            //idcookie.Expires = DateTime.Now.AddDays(-1);
+            //HttpContext.Current.Response.Cookies.Add(idcookie);
+        }
+
+        private static HttpCookie GetAccessCookie()
+        {
+            return new HttpCookie(ACCESS_TOKEN);
         }
     }
 }

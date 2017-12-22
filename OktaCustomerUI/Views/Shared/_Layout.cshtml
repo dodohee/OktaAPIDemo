@@ -6,7 +6,6 @@
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -23,6 +22,7 @@
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("Registration", "List", "Registration")</li>
+                    <li>@Html.ActionLink("Secured", "Index", "Secured")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -30,8 +30,8 @@
     </div>
     <div class="container body-content">
         @RenderBody()
-        <hr />
         @Html.Partial("_DisplayTokenInfo")
+        <hr />
         <footer>
             <p>&copy; @DateTime.Now.Year - Okta Demo</p>
         </footer>

@@ -132,16 +132,6 @@ namespace OktaCustomerUI.Controllers
                 Helpers.LoginHelper.SetOIDCTokens(tokenresponse);
             }
 
-            //1 server side - check for token on home page
-            //2 then write logic to show login info
-            //3 add page for security check - not anonymous
-            
-            //LAST
-            //display credentials when accessing site if valid token - use javascript to detect valid okta session
-
-            //redo cert
-            //force https on login screen
-
             return RedirectToAction("Index", "Home");
         }
         

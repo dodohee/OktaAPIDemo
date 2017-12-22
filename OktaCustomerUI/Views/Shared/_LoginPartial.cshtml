@@ -13,6 +13,15 @@
     </ul>
     }
 }
+else if (OktaCustomerUI.Helpers.LoginHelper.IsUserAuthorized())
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            Hello ?
+        </li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()">Log out</a></li>
+    </ul>
+}
 else
 {
     <ul class="nav navbar-nav navbar-right">
